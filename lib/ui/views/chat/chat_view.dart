@@ -33,130 +33,138 @@ class ChatView extends StackedView<ChatViewModel> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Chat messages area
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(color: AppColors.background),
-              child:
-                  viewModel.isBusy
-                      ? const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      )
-                      : viewModel.messages.isEmpty
-                      ? const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.chat_bubble_outline,
-                              size: 64,
-                              color: AppColors.textSecondary,
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Start a conversation!',
-                              style: TextStyle(
-                                fontSize: 18,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Chat messages area
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(color: AppColors.background),
+                child:
+                    viewModel.isBusy
+                        ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        )
+                        : viewModel.messages.isEmpty
+                        ? const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.chat_bubble_outline,
+                                size: 64,
                                 color: AppColors.textSecondary,
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 16),
+                              Text(
+                                'Start a conversation!',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: viewModel.messages.length,
+                          itemBuilder: (context, index) {
+                            final message = viewModel.messages[index];
+                            return ChatBubble(message: message);
+                          },
                         ),
-                      )
-                      : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: viewModel.messages.length,
-                        itemBuilder: (context, index) {
-                          final message = viewModel.messages[index];
-                          return ChatBubble(message: message);
-                        },
-                      ),
+              ),
             ),
-          ),
-          // Voice input indicator
-          if (viewModel.isListening)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              color: AppColors.primary.withOpacity(0.1),
-              child: Row(
-                children: [
-                  const Icon(Icons.mic, color: AppColors.primary, size: 20),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Listening for voice input...',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w500,
+            // Voice input indicator
+            if (viewModel.isListening)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
+                color: AppColors.primary.withOpacity(0.1),
+                child: Row(
+                  children: [
+                    const Icon(Icons.mic, color: AppColors.primary, size: 20),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Listening for voice input...',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primary,
+                    const Spacer(),
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: viewModel.stopVoiceInput,
-                    icon: const Icon(
-                      Icons.stop,
-                      color: AppColors.primary,
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: viewModel.stopVoiceInput,
+                      icon: const Icon(
+                        Icons.stop,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      tooltip: 'Stop listening',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            // Voice success indicator
+            if (viewModel.showVoiceSuccess)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
+                color: AppColors.success.withOpacity(0.1),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.success,
                       size: 20,
                     ),
-                    tooltip: 'Stop listening',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Voice input received!',
+                      style: TextStyle(
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+            // Input area
+            ChatInput(
+              onSendMessage: viewModel.sendMessage,
+              onInputChanged: viewModel.updateInput,
+              onVoiceInput: viewModel.startVoiceInput,
+              onStopVoiceInput: viewModel.stopVoiceInput,
+              currentInput: viewModel.currentInput,
+              isLoading: viewModel.isLoading,
+              isListening: viewModel.isListening,
+              isSpeechAvailable: ConfigService.isSpeechRecognitionEnabled,
             ),
-          // Voice success indicator
-          if (viewModel.showVoiceSuccess)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              color: AppColors.success.withOpacity(0.1),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.check_circle,
-                    color: AppColors.success,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Voice input received!',
-                    style: TextStyle(
-                      color: AppColors.success,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          // Input area
-          ChatInput(
-            onSendMessage: viewModel.sendMessage,
-            onInputChanged: viewModel.updateInput,
-            onVoiceInput: viewModel.startVoiceInput,
-            onStopVoiceInput: viewModel.stopVoiceInput,
-            currentInput: viewModel.currentInput,
-            isLoading: viewModel.isLoading,
-            isListening: viewModel.isListening,
-            isSpeechAvailable: ConfigService.isSpeechRecognitionEnabled,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
