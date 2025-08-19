@@ -160,17 +160,8 @@ class _ChatInputState extends State<ChatInput> {
                   widget.isLoading || _controller.text.trim().isEmpty
                       ? null
                       : _handleSend,
-              icon:
-                  widget.isLoading
-                      ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.textLight,
-                        ),
-                      )
-                      : const Icon(Icons.send, color: AppColors.textLight),
+              icon: const Icon(Icons.send, color: AppColors.textLight),
+              tooltip: widget.isLoading ? 'AI is thinking...' : 'Send message',
             ),
           ),
         ],

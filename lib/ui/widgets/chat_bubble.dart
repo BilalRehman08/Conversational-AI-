@@ -1,5 +1,6 @@
 import 'package:conversational_ai/models/chat_message.dart';
 import 'package:conversational_ai/ui/common/app_colors.dart';
+import 'package:conversational_ai/ui/widgets/typing_indicator.dart';
 import 'package:flutter/material.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -55,24 +56,16 @@ class ChatBubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    message.content,
-                    style: TextStyle(
-                      color: isUser ? AppColors.userText : AppColors.aiText,
-                      fontSize: 16,
-                    ),
-                  ),
-                  if (message.isStreaming && message.content.isEmpty) ...[
-                    const SizedBox(height: 8),
-                    const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.primary,
+                  if (message.isStreaming && message.content.isEmpty)
+                    const TypingIndicator()
+                  else
+                    Text(
+                      message.content,
+                      style: TextStyle(
+                        color: isUser ? AppColors.userText : AppColors.aiText,
+                        fontSize: 16,
                       ),
                     ),
-                  ],
                 ],
               ),
             ),
