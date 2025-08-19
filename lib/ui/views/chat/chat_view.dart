@@ -1,3 +1,4 @@
+import 'package:conversational_ai/services/config_service.dart';
 import 'package:conversational_ai/ui/common/app_colors.dart';
 import 'package:conversational_ai/ui/views/chat/chat_viewmodel.dart';
 import 'package:conversational_ai/ui/widgets/chat_bubble.dart';
@@ -153,7 +154,7 @@ class ChatView extends StackedView<ChatViewModel> {
             currentInput: viewModel.currentInput,
             isLoading: viewModel.isLoading,
             isListening: viewModel.isListening,
-            isSpeechAvailable: true, // We'll make this dynamic later
+            isSpeechAvailable: ConfigService.isSpeechRecognitionEnabled,
           ),
         ],
       ),

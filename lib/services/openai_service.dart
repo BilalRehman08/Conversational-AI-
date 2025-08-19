@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:conversational_ai/services/config_service.dart';
 import 'package:conversational_ai/services/llm_service.dart';
 
 class OpenAiService implements LlmService {
-  // static const String _apiKey = String.fromEnvironment('OPENAI_API_KEY');
-  // static const String _baseUrl = 'https://api.openai.com/v1';
+  final apiKey = ConfigService.openaiApiKey;
+  final baseUrl = ConfigService.openaiBaseUrl;
 
   @override
   String get serviceName => 'OpenAI Service';

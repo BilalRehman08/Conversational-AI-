@@ -1,10 +1,16 @@
 import 'package:conversational_ai/app/app.locator.dart';
+import 'package:conversational_ai/services/config_service.dart';
 import 'package:conversational_ai/ui/common/app_colors.dart';
 import 'package:conversational_ai/ui/views/chat/chat_view.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  // Initialize environment variables
+  await ConfigService.initialize();
+
+  // Setup dependency injection
   setupLocator();
+
   runApp(const MyApp());
 }
 
