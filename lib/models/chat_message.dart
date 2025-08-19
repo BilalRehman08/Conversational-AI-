@@ -30,24 +30,4 @@ class ChatMessage {
       isStreaming: isStreaming ?? this.isStreaming,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'content': content,
-      'type': type.name,
-      'timestamp': timestamp.toIso8601String(),
-      'isStreaming': isStreaming,
-    };
-  }
-
-  factory ChatMessage.fromJson(Map<String, dynamic> json) {
-    return ChatMessage(
-      id: json['id'],
-      content: json['content'],
-      type: MessageType.values.firstWhere((e) => e.name == json['type']),
-      timestamp: DateTime.parse(json['timestamp']),
-      isStreaming: json['isStreaming'] ?? false,
-    );
-  }
 }

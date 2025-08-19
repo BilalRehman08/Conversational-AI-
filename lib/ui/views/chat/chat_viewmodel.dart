@@ -30,9 +30,6 @@ class ChatViewModel extends BaseViewModel {
   String _currentInput = '';
   String get currentInput => _currentInput;
 
-  bool _showLogs = false;
-  bool get showLogs => _showLogs;
-
   bool _isListening = false;
   bool get isListening => _isListening;
 
@@ -163,17 +160,6 @@ class ChatViewModel extends BaseViewModel {
 
   void _setLoading(bool loading) {
     _isLoading = loading;
-    notifyListeners();
-  }
-
-  void toggleLogs() {
-    _showLogs = !_showLogs;
-    notifyListeners();
-  }
-
-  Future<void> clearLogs() async {
-    await _loggingService.clearLogs();
-    _logs = [];
     notifyListeners();
   }
 

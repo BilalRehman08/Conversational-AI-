@@ -2,7 +2,7 @@ import 'package:conversational_ai/ui/common/app_colors.dart';
 import 'package:conversational_ai/ui/views/chat/chat_viewmodel.dart';
 import 'package:conversational_ai/ui/widgets/chat_bubble.dart';
 import 'package:conversational_ai/ui/widgets/chat_input.dart';
-import 'package:conversational_ai/ui/widgets/logs_drawer.dart';
+import 'package:conversational_ai/ui/widgets/recent_conversations_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -25,9 +25,10 @@ class ChatView extends StackedView<ChatViewModel> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.history, color: AppColors.textPrimary),
-            onPressed: viewModel.toggleLogs,
-            tooltip: 'View Conversation Logs',
+            icon: const Icon(Icons.list, color: AppColors.textPrimary),
+            onPressed:
+                () => RecentConversationsSheet.show(context, viewModel.logs),
+            tooltip: 'View Recent Conversations',
           ),
         ],
       ),
@@ -70,11 +71,7 @@ class ChatView extends StackedView<ChatViewModel> {
                         itemCount: viewModel.messages.length,
                         itemBuilder: (context, index) {
                           final message = viewModel.messages[index];
-                          return ChatBubble(
-                            message: message,
-                            isLastMessage:
-                                index == viewModel.messages.length - 1,
-                          );
+                          return ChatBubble(message: message);
                         },
                       ),
             ),
@@ -128,15 +125,19 @@ class ChatView extends StackedView<ChatViewModel> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              color: Colors.green.withOpacity(0.1),
+              color: AppColors.success.withOpacity(0.1),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  const Icon(
+                    Icons.check_circle,
+                    color: AppColors.success,
+                    size: 20,
+                  ),
                   const SizedBox(width: 8),
                   const Text(
                     'Voice input received!',
                     style: TextStyle(
-                      color: Colors.green,
+                      color: AppColors.success,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -156,13 +157,6 @@ class ChatView extends StackedView<ChatViewModel> {
           ),
         ],
       ),
-      endDrawer:
-          viewModel.showLogs
-              ? LogsDrawer(
-                logs: viewModel.logs,
-                onClearLogs: viewModel.clearLogs,
-              )
-              : null,
     );
   }
 

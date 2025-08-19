@@ -56,21 +56,6 @@ class LoggingService {
     await _saveLogs();
   }
 
-  /// Gets logs for a specific date range
-  List<ConversationLog> getLogsForDateRange(DateTime start, DateTime end) {
-    return _logs
-        .where(
-          (log) => log.timestamp.isAfter(start) && log.timestamp.isBefore(end),
-        )
-        .toList();
-  }
-
-  /// Gets recent logs (last N entries)
-  List<ConversationLog> getRecentLogs(int count) {
-    if (_logs.length <= count) return _logs;
-    return _logs.sublist(_logs.length - count);
-  }
-
   String _getLogFilePath() {
     // For now, using a simple path. In production, you might want to use
     // getApplicationDocumentsDirectory() from path_provider package

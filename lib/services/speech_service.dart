@@ -75,18 +75,6 @@ class SpeechService {
     }
   }
 
-  /// Cancel speech recognition (mock)
-  Future<void> cancelListening() async {
-    if (!_isListening) return;
-
-    try {
-      await Future.delayed(Duration(milliseconds: 200));
-      _isListening = false;
-    } catch (e) {
-      print('Error canceling speech recognition: $e');
-    }
-  }
-
   /// Check if speech recognition is available on the device (mock)
   Future<bool> checkAvailability() async {
     return _isInitialized;

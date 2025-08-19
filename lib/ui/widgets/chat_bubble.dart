@@ -5,13 +5,8 @@ import 'package:flutter/material.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
-  final bool isLastMessage;
 
-  const ChatBubble({
-    super.key,
-    required this.message,
-    this.isLastMessage = false,
-  });
+  const ChatBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
