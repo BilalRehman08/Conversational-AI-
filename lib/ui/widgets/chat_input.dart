@@ -70,41 +70,6 @@ class _ChatInputState extends State<ChatInput> {
       ),
       child: Row(
         children: [
-          // Voice input button
-          if (widget.isSpeechAvailable)
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    widget.isListening
-                        ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow:
-                    widget.isListening
-                        ? [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
-                            blurRadius: 8,
-                            spreadRadius: 2,
-                          ),
-                        ]
-                        : null,
-              ),
-              child: IconButton(
-                onPressed:
-                    widget.isLoading
-                        ? null
-                        : widget.isListening
-                        ? widget.onStopVoiceInput
-                        : widget.onVoiceInput,
-                icon:
-                    widget.isListening
-                        ? const Icon(Icons.stop, color: AppColors.textLight)
-                        : const Icon(Icons.mic, color: AppColors.textLight),
-                tooltip: widget.isListening ? 'Stop listening' : 'Tap to speak',
-              ),
-            ),
-          if (widget.isSpeechAvailable) const SizedBox(width: 8),
           // Text input field
           Expanded(
             child: TextField(
@@ -146,24 +111,54 @@ class _ChatInputState extends State<ChatInput> {
             ),
           ),
           const SizedBox(width: 8),
-          // Send button
-          Container(
-            decoration: BoxDecoration(
-              color:
-                  widget.isLoading || _controller.text.trim().isEmpty
+          // Dynamic button (Voice or Send)
+          if (widget.isSpeechAvailable) ...[
+            // Voice button (when input is empty)
+            if (_controller.text.trim().isEmpty)
+              Container(
+                decoration: BoxDecoration(
+                  color: widget.isListening
+                      ? AppColors.primary
+                      : AppColors.primary.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: widget.isListening
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: IconButton(
+                  onPressed: widget.isLoading
+                      ? null
+                      : widget.isListening
+                          ? widget.onStopVoiceInput
+                          : widget.onVoiceInput,
+                  icon: widget.isListening
+                      ? const Icon(Icons.stop, color: AppColors.textLight)
+                      : const Icon(Icons.mic, color: AppColors.textLight),
+                  tooltip: widget.isListening ? 'Stop listening' : 'Tap to speak',
+                ),
+              )
+            // Send button (when input has text)
+            else
+              Container(
+                decoration: BoxDecoration(
+                  color: widget.isLoading
                       ? AppColors.textSecondary
                       : AppColors.primary,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: IconButton(
-              onPressed:
-                  widget.isLoading || _controller.text.trim().isEmpty
-                      ? null
-                      : _handleSend,
-              icon: const Icon(Icons.send, color: AppColors.textLight),
-              tooltip: widget.isLoading ? 'AI is thinking...' : 'Send message',
-            ),
-          ),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: IconButton(
+                  onPressed: widget.isLoading ? null : _handleSend,
+                  icon: const Icon(Icons.send, color: AppColors.textLight),
+                  tooltip: widget.isLoading ? 'AI is thinking...' : 'Send message',
+                ),
+              ),
+          ],
         ],
       ),
     );

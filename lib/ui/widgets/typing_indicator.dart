@@ -23,7 +23,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
   @override
   void initState() {
     super.initState();
-    
+
     _controllers = List.generate(3, (index) {
       return AnimationController(
         duration: const Duration(milliseconds: 600),
@@ -31,11 +31,12 @@ class _TypingIndicatorState extends State<TypingIndicator>
       );
     });
 
-    _animations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.4, end: 1.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-      );
-    }).toList();
+    _animations =
+        _controllers.map((controller) {
+          return Tween<double>(begin: 0.4, end: 1.0).animate(
+            CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+          );
+        }).toList();
 
     // Start animations with staggered delays
     for (int i = 0; i < _controllers.length; i++) {
