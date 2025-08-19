@@ -5,6 +5,7 @@ A Flutter application built with Stacked architecture that provides a conversati
 ## Features
 
 - **Single Screen Chat Interface**: Clean, modern chat UI with text input and send button
+- **Voice Input Support**: Tap the microphone button to use voice input (currently mock implementation)
 - **Mock AI Responses**: Simulated AI responses with streaming text effect and 1-2 second thinking delay
 - **Conversation History**: Maintains the last 5 conversation turns (10 messages) on screen
 - **Local Logging**: Logs all conversations with timestamps and stores them locally
@@ -28,6 +29,7 @@ lib/
 │   ├── llm_service.dart      # Abstract LLM service interface
 │   ├── mock_llm_service.dart # Mock implementation for testing
 │   ├── openai_service.dart   # OpenAI service stub (for future use)
+│   ├── speech_service.dart   # Voice input service (mock implementation)
 │   └── logging_service.dart  # Conversation logging service
 ├── ui/
 │   ├── common/
@@ -117,9 +119,10 @@ The app is configured to use environment variables for sensitive data like API k
 ## Usage
 
 1. **Start a Conversation**: Type your message in the input field and tap the send button
-2. **View AI Response**: The AI will respond with a simulated thinking delay and streaming text effect
-3. **View Logs**: Tap the history icon in the app bar to view conversation logs
-4. **Clear Logs**: Use the clear button in the logs drawer to remove all conversation history
+2. **Use Voice Input**: Tap the microphone button to use voice input (currently shows mock responses)
+3. **View AI Response**: The AI will respond with a simulated thinking delay and streaming text effect
+4. **View Logs**: Tap the history icon in the app bar to view conversation logs
+5. **Clear Logs**: Use the clear button in the logs drawer to remove all conversation history
 
 ## Mock AI Responses
 
@@ -130,10 +133,20 @@ The MockLlmService provides various types of responses:
 - **Questions**: Provides thoughtful responses to questions
 - **General**: Default responses for longer messages
 
+## Voice Input Feature
+
+The app includes a voice input feature with a mock implementation:
+- **Microphone Button**: Tap the microphone icon to start voice input
+- **Mock Responses**: Currently generates random predefined responses to simulate speech recognition
+- **Visual Feedback**: Shows listening state with animated microphone icon
+- **Easy Integration**: The mock service can be easily replaced with real speech recognition
+
+**Note**: The current implementation uses a mock speech service that generates random responses. To implement real speech recognition, replace the `SpeechService` with a real implementation using packages like `speech_to_text` or `flutter_speech`.
+
 ## Future Enhancements
 
 - [ ] Real OpenAI API integration
-- [ ] Voice input support
+- [ ] Real voice input support (replace mock implementation)
 - [ ] Message reactions and editing
 - [ ] Export conversation logs
 - [ ] Multiple AI models support

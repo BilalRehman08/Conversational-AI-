@@ -5,12 +5,14 @@ import 'package:conversational_ai/models/chat_message.dart';
 import 'package:conversational_ai/models/conversation_log.dart';
 import 'package:conversational_ai/services/llm_service.dart';
 import 'package:conversational_ai/services/logging_service.dart';
+import 'package:conversational_ai/services/speech_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class ChatViewModel extends BaseViewModel {
   final _llmService = locator<LlmService>();
   final _loggingService = locator<LoggingService>();
+  final _speechService = locator<SpeechService>();
   final _snackbarService = locator<SnackbarService>();
 
   static const int _maxConversationHistory =
@@ -30,6 +32,12 @@ class ChatViewModel extends BaseViewModel {
 
   bool _showLogs = false;
   bool get showLogs => _showLogs;
+
+  bool _isListening = false;
+  bool get isListening => _isListening;
+
+  bool _showVoiceSuccess = false;
+  bool get showVoiceSuccess => _showVoiceSuccess;
 
   StreamSubscription<String>? _streamSubscription;
 
@@ -169,9 +177,70 @@ class ChatViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  /// Start voice input
+  Future<void> startVoiceInput() async {
+    if (_isListening) return;
+
+    try {
+      // Initialize speech service if needed
+      final isAvailable = await _speechService.checkAvailability();
+      if (!isAvailable) {
+        // We'll handle this through UI feedback instead of snackbar
+        return;
+      }
+
+      _isListening = true;
+      notifyListeners();
+
+      await _speechService.startListening(
+        onResult: (text) {
+          if (text.isNotEmpty) {
+            _currentInput = text;
+            _showVoiceSuccess = true;
+            notifyListeners();
+            // Hide success indicator after 2 seconds
+            Future.delayed(Duration(seconds: 2), () {
+              _showVoiceSuccess = false;
+              notifyListeners();
+            });
+          }
+        },
+        onListeningComplete: () {
+          _isListening = false;
+          notifyListeners();
+        },
+      );
+    } catch (e) {
+      _isListening = false;
+      notifyListeners();
+      // We'll handle errors through UI feedback instead of snackbar
+      print('Speech recognition error: ${e.toString()}');
+    }
+  }
+
+  /// Stop voice input
+  Future<void> stopVoiceInput() async {
+    if (!_isListening) return;
+
+    try {
+      await _speechService.stopListening();
+      _isListening = false;
+      notifyListeners();
+      // We'll handle feedback through UI instead of snackbar
+    } catch (e) {
+      print('Error stopping speech recognition: ${e.toString()}');
+    }
+  }
+
+  /// Check if speech recognition is available
+  Future<bool> isSpeechAvailable() async {
+    return await _speechService.checkAvailability();
+  }
+
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    _speechService.stopListening();
     super.dispose();
   }
 }

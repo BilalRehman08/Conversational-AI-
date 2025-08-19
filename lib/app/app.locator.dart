@@ -15,6 +15,7 @@ import 'package:stacked_shared/stacked_shared.dart';
 import '../services/logging_service.dart';
 import '../services/llm_service.dart';
 import '../services/mock_llm_service.dart';
+import '../services/speech_service.dart';
 
 final locator = StackedLocator.instance;
 
@@ -34,4 +35,5 @@ Future<void> setupLocator({
   locator.registerLazySingleton(() => SnackbarService());
   locator.registerLazySingleton(() => LoggingService());
   locator.registerLazySingleton<LlmService>(() => MockLlmService());
+  locator.registerLazySingleton(() => SpeechService());
 }

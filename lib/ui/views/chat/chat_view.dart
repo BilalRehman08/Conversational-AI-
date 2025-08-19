@@ -79,12 +79,80 @@ class ChatView extends StackedView<ChatViewModel> {
                       ),
             ),
           ),
+          // Voice input indicator
+          if (viewModel.isListening)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              color: AppColors.primary.withOpacity(0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.mic, color: AppColors.primary, size: 20),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Listening for voice input...',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: viewModel.stopVoiceInput,
+                    icon: const Icon(
+                      Icons.stop,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
+                    tooltip: 'Stop listening',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          // Voice success indicator
+          if (viewModel.showVoiceSuccess)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              color: Colors.green.withOpacity(0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Voice input received!',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           // Input area
           ChatInput(
             onSendMessage: viewModel.sendMessage,
             onInputChanged: viewModel.updateInput,
+            onVoiceInput: viewModel.startVoiceInput,
+            onStopVoiceInput: viewModel.stopVoiceInput,
             currentInput: viewModel.currentInput,
             isLoading: viewModel.isLoading,
+            isListening: viewModel.isListening,
+            isSpeechAvailable: true, // We'll make this dynamic later
           ),
         ],
       ),
